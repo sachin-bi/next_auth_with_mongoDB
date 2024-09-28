@@ -7,7 +7,7 @@ export async function connectDB() {
 
     console.log("2-Connected to MongoDB");
     connection.on("connected", () => {
-      console.log("Connected to MongoDB");
+      console.log("1-Connected to MongoDB");
     });
 
     connection.on("error", (err) => {

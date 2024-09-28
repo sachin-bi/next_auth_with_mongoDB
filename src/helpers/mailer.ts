@@ -7,6 +7,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
   try {
     //Todo: configure mail for usage(done)
     const hashedToken = await bcryptjs.hash(userId.toString(), 10);
+
     if (emailType === "VERIFY") {
       await User.findOneAndUpdate(
         { verifyToken: hashedToken, verifyTokenExpiry: Date.now() + 3600000 }
@@ -22,37 +23,41 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
       );
     }
 
-    // const transporter = nodemailer.createTransport({
-    //   host: "smtp.ethereal.email",
-    //   port: 587,
-    //   secure: false, // true for port 465, false for other ports
-    //   auth: {
-    //     user: "maddison53@ethereal.email",
-    //     pass: "jn7jnAPss4f63QBp6D",
-    //   },
-    // });
-    // Looking to send emails in production? Check out our Email API/SMTP product!
-    const transport = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
+
+
+    const transporter = nodemailer.createTransport({
+      host: "sandbox.smtp.mailtrap.io",    // should be in env
+      port: 2525,      // should be in env
       auth: {
-        user: "9a7500e2715e4f", // not good
-        pass: "0b8d38368c6f71", // not good
+        user: "9a7500e2715e4f",   // should be in env
+        pass: "0b8d38368c6f71",    // should be in env
       },
     });
 
+
     const mailOptions = {
-      from: "sachin@sachin.com", // sender address
-      to: email, // list of receivers
+      from: "sachin@sachin.com", 
+      to: email,
       subject:
-        emailType === "VERIFY" ? "Verify Your Email" : "Reset Your Password", // Subject line
-      //   text: "Hello world?", // plain text body
-      // html: "<p>Hello world?</b>", // html body
-      html: `<p>Click <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"} or copy and paste the link below in your browser. <br> ${process.env.DOMAIN}/verifyemail?token=${hashedToken} </p>`,
+        emailType === "VERIFY" ? "Verify Your Email" : "Reset Your Password",
+
+      html: `<p>Click <a href="${
+        process.env.DOMAIN
+      }/verifyemail?token=${hashedToken}">here</a> to ${
+        emailType === "VERIFY" ? "verify your email" : "reset your password"
+      } or copy and paste the link below in your browser. <br> ${
+        process.env.DOMAIN
+      }/verifyemail?token=${hashedToken} </p>`,
     };
 
-    const mailResponse = await transport.sendMail(mailOptions);
+    const mailResponse = await transporter.sendMail(mailOptions);
+
+    console.log(".... mailResponse id src/helpers/mailer---", mailResponse.messageId);
+    
     return mailResponse;
+
+
+    
   } catch (error: any) {
     throw new Error(error.message);
   }

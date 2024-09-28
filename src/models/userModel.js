@@ -1,7 +1,5 @@
-import { verify } from "crypto";
 import mongoose from "mongoose";
-import { type } from "os";
-import { use } from "react";
+
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -26,10 +24,12 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    forgotPasswordToken: String,
-    forgotPasswordTokenExpiry: Date,
+    
     verifyToken: String,
     verifyTokenExpiry: Date,
+
+    forgotPasswordToken: String,
+    forgotPasswordTokenExpiry: Date,
 
 });
 

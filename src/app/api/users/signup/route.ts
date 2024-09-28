@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     const { username, email, password } = reqBody;
     // validation must be done here
-    console.log(reqBody);
+    console.log(" reqBody from FORM DATA api/users/signup ",reqBody);
 
     const user = await User.findOne({ email });
     if (user) {
@@ -34,15 +34,20 @@ export async function POST(request: NextRequest) {
     });
 
     const savedUser = await newUser.save();
-    console.log("saved user from api/users/signup", savedUser);
+    console.log("----saved user from api/users/signup", savedUser);
+
+
 
     // send verification email
 
     await sendEmail({ email, emailType: "VERIFY", userId: savedUser._id });
     return NextResponse.json(
-      { message: "User registered successfully", success: true, savedUser },
+      { message: "yo bro, User registered successfully", success: true, savedUser },
       { status: 200 }
     );
+    // shouldn't return password
+
+    
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
