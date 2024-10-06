@@ -38,13 +38,16 @@ export async function POST(request: NextRequest) {
     
 
     const tokenData = {
+      // usually only id is kept here, otherwise it'll consume more bandwidth in network
       id: user._id,
       username: user.username,
       email: user.email,
     };
+
     const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
       expiresIn: "1d",
     });
+    
     const response = NextResponse.json({
       message: "Login successful",
       success: true,

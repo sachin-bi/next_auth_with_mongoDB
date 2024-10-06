@@ -9,34 +9,32 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
     const hashedToken = await bcryptjs.hash(userId.toString(), 10);
 
     if (emailType === "VERIFY") {
-      await User.findOneAndUpdate(
-        { verifyToken: hashedToken, verifyTokenExpiry: Date.now() + 3600000 }
-        // { isVerified: true }
-      );
+       await User.findByIdAndUpdate(userId, {
+        $set: {
+          verifyToken: hashedToken,
+          verifyTokenExpiry: Date.now() + 3600000,
+        }, // expire 1hr from now
+      });
     } else if (emailType === "RESET") {
-      await User.findOneAndUpdate(
-        {
+      await User.findByIdAndUpdate(userId, {
+        $set: {
           forgotPasswordToken: hashedToken,
           forgotPasswordTokenExpiry: Date.now() + 3600000,
-        }
-        // { isVerified: true }
-      );
+        },
+      });
     }
 
-
-
     const transporter = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",    // should be in env
-      port: 2525,      // should be in env
+      host: "sandbox.smtp.mailtrap.io", // should be in env
+      port: 2525, // should be in env
       auth: {
-        user: "9a7500e2715e4f",   // should be in env
-        pass: "0b8d38368c6f71",    // should be in env
+        user: "9a7500e2715e4f", // should be in env
+        pass: "0b8d38368c6f71", // should be in env
       },
     });
 
-
     const mailOptions = {
-      from: "sachin@sachin.com", 
+      from: "sachin@sachin.com",
       to: email,
       subject:
         emailType === "VERIFY" ? "Verify Your Email" : "Reset Your Password",
@@ -52,12 +50,12 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
 
     const mailResponse = await transporter.sendMail(mailOptions);
 
-    console.log(".... mailResponse id src/helpers/mailer---", mailResponse.messageId);
-    
+    console.log(
+      ".... mailResponse id src/helpers/mailer---",
+      mailResponse.messageId
+    );
+
     return mailResponse;
-
-
-    
   } catch (error: any) {
     throw new Error(error.message);
   }
