@@ -50,7 +50,7 @@ export default function LoginPage() {
     <div className='
     flex flex-col items-center justify-center min-h-screen py-2
     '>
-      <h1 className='mb-6'>{loading ? "Processing..wait for a sec!" : "Signup"}</h1>
+      <h1 className='mb-6'>{loading ? "Processing..wait for a sec!" : "login"}</h1>
      
       <label htmlFor='email'>email:</label>
       <input
@@ -76,7 +76,7 @@ export default function LoginPage() {
         onClick={onLogin}
         className='p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600'
       >
-        {buttonDisabled ? "Fill the form to Signup" : "SignUp"}
+        {buttonDisabled ? "Fill the form to login" : "login"}
       </button>
       <Link href="/signup">Visit Signup page</Link>
     </div>
